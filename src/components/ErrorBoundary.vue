@@ -14,6 +14,7 @@ export const errorInfo = ref<string>('')
 
 <script setup lang="ts">
 const error = ref<Error | null>(null)
+// @ts-ignore - intentionally unused in template but used in exported function
 const errorInfo = ref<string>('')
 </script>
 
