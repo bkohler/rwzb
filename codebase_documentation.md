@@ -15,6 +15,22 @@ Vue.js application that recommends optimal running times based on weather condit
   - Composition API with TypeScript
   - Reactive state management (ref)
   - Async data fetching (onMounted)
+  - ErrorBoundary component for error handling
+- Template Structure:
+  - Wrapped in ErrorBoundary component
+  - Clean conditional rendering (loading/error/data states)
+  - Properly nested div structure
+
+### 2. ErrorBoundary.vue
+- Error boundary component
+- Features:
+  - Catches and displays errors from child components
+  - Provides "Try again" button
+  - Styled error display
+- Implementation:
+  - Uses Vue's Composition API
+  - Manages error state with ref
+  - Slot-based content rendering
 
 ### 2. API Service (api.ts)
 #### Weather Data Integration
