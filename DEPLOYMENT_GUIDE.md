@@ -7,12 +7,12 @@
 ## Managing Secrets
 ```bash
 # Set secrets (will prompt for value)
-gh secret set WEATHER_API_KEY
-gh secret set DEEPSEEK_API_KEY
+gh secret set VITE_WEATHER_API_KEY
+gh secret set VITE_DEEPSEEK_API_KEY
 
 # Alternative: Set secrets directly
-gh secret set WEATHER_API_KEY --body "your_api_key_here"
-gh secret set DEEPSEEK_API_KEY --body "your_api_key_here"
+gh secret set VITE_WEATHER_API_KEY --body "your_api_key_here"
+gh secret set VITE_DEEPSEEK_API_KEY --body "your_api_key_here"
 
 # List secrets
 gh secret list
