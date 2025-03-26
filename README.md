@@ -1,71 +1,36 @@
-# Best Running Time on Zugerberg
+# Running Weather Zone Backend (RWZB)
 
-A simple web app that displays the best running time on Zugerberg for tomorrow based on daylight and weather conditions. The app has no options or user input — it simply calculates and presents the optimal time frame for running.
+## Project Overview
+Vue.js application that recommends optimal running times based on weather conditions.
 
-## Features
+## Security Best Practices
 
-- **Automatic Daylight Calculation**
-  - Fetches sunrise and sunset times for Zugerberg automatically 
-  - Calculates the daylight window:
-    - Start: 30 minutes after sunrise
-    - End: 30 minutes before sunset
-  - Displays the time in Swiss time format (CET/CEST)
+1. **API Keys Management**:
+   - Never commit API keys to version control
+   - Use `.env` file for local development
+   - Add `.env` to `.gitignore`
+   - Rotate keys immediately if exposed
 
-- **Weather Forecast Integration**
-  - Fetches tomorrow's weather forecast for Zugerberg
-  - Analyzes temperature, precipitation, wind speed, and visibility
-  - Recommends a 2-hour window with the best weather conditions
-  - Shows weather summary (temperature and conditions)
+2. **Environment Setup**:
+   ```bash
+   # Create .env file from example
+   cp .env.example .env
+   # Add your actual API keys to .env
+   ```
 
-- **Minimal UI**
-  - White background, black text
-  - Displays the optimal running time and weather information
-  - Shows the date for tomorrow
-  - No buttons, no settings
+3. **If Keys Are Exposed**:
+   - Immediately rotate all exposed keys
+   - Force push to overwrite git history
+   - Audit commit history for other sensitive data
 
-- **Timezone Handling**
-  - Automatically adjusts to CET/CEST (Swiss time zone)
+4. **Testing**:
+   - Use mock keys in test files
+   - Never use production keys in tests
 
-## Data Sources
-
-- [Sunrise-Sunset API](https://sunrise-sunset.org/api) for daylight data
-- [OpenWeatherMap API](https://openweathermap.org/api) for weather forecasts
-
-## Technology
-
-- Vue 3 with TypeScript (Composition API)
-- Vite for fast bundling and development
-- TailwindCSS for styling
-- Axios for API requests
-
-## Running the App
-
-```bash
-# Copy .env.example to .env and add your OpenWeatherMap API key
-cp .env.example .env
-
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-```
-
-## Sharing with ngrok
-
-The repository includes a convenient script for sharing your local development server:
-
-```bash
-# Share your app with a public URL
-./share-app.sh
-```
-
-## GitHub Pages Deployment
-
-This app is automatically deployed to GitHub Pages when changes are pushed to the main branch.
+## Incident Report (2025-03-26)
+- Exposed API keys in git history
+- Remediation steps taken:
+  - Removed .env from tracking
+  - Force pushed to overwrite history
+  - Keys rotated
+  - Security documentation added
