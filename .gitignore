@@ -35,3 +35,4 @@ ngrok.log
 
 # Temporary files
 *.tmp
+.env
