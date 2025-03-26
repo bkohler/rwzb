@@ -12,7 +12,7 @@ interface SunTimesResponse {
   };
 }
 
-interface WeatherData {
+export interface WeatherData {
   dt: number;
   main: {
     temp: number;
@@ -31,13 +31,22 @@ interface WeatherData {
   };
 }
 
+export class APIError extends Error {
+  readonly isOperational: boolean;
+  
+  constructor(message: string, isOperational: boolean) {
+    super(message);
+    this.isOperational = isOperational;
+  }
+}
+
 interface WeatherResponse {
   list: WeatherData[];
 }
 
 // Zugerberg coordinates
-const LAT = 47.1736;
-const LNG = 8.5174;
+export const LAT = 47.1736;
+export const LNG = 8.5174;
 
 /**
  * Fetches sunrise and sunset times for Zugerberg
@@ -67,6 +76,10 @@ export async function getSunTimes(forTomorrow: boolean = false): Promise<SunTime
  * Fetches weather forecast for Zugerberg
  */
 export async function getWeatherForecast(forTomorrow: boolean = false): Promise<WeatherResponse> {
+  if (!WEATHER_API_KEY) {
+    throw new Error('Weather API key is not configured');
+  }
+
   const response = await axios.get(WEATHER_API_URL, {
     params: {
       lat: LAT,
@@ -104,4 +117,91 @@ export function isGoodWeather(weather: WeatherData): boolean {
  */
 export function getWeatherSummary(weather: WeatherData): string {
   return `${Math.round(weather.main.temp)}°C, ${weather.weather[0].description}`;
+}
+
+export interface DeepSeekRecommendation {
+  bestTime: string;
+  duration: string;
+  intensity: string;
+  reasoning: string;
+}
+
+const DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY;
+const systemPrompt = `You are an expert running coach combining David Roche's playful mindset and Jason Koop's evidence-based approach. Based on weather conditions, suggest optimal running parameters including:
+- Best time window (morning/afternoon/evening)
+- Recommended duration (30-120 mins)
+- Training intensity (easy/moderate/hard)
+- Detailed reasoning considering temperature, humidity, wind and conditions
+
+Return response as JSON with these properties:
+- bestTime: string
+- duration: string
+- intensity: string
+- reasoning: string`;
+/**
+ * Get recommendations for running based on weather conditions from DeepSeek API
+ */
+export async function getDeepSeekRecommendation(
+  weather: WeatherData
+): Promise<DeepSeekRecommendation> {
+  try {
+    if (!DEEPSEEK_API_KEY) {
+      throw new Error('DeepSeek API key is not configured');
+    }
+
+    const prompt = `Current weather:
+    - Temperature: ${weather.main.temp}°C
+    - Humidity: ${weather.main.humidity}%
+    - Wind: ${weather.wind.speed} m/s
+    - Conditions: ${weather.weather[0].description}`;
+
+    console.log('Using system prompt:', systemPrompt);
+    const response = await axios.post(
+      'https://api.deepseek.com/chat/completions',
+      {
+        model: "deepseek-chat",
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        response_format: { type: "json_object" }
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+        }
+      }
+    );
+
+    const content = response.data.choices[0].message.content;
+    if (!content) {
+      throw new Error('Empty response received from DeepSeek API');
+    }
+
+    try {
+      const result = JSON.parse(content);
+      
+      // Validate response structure
+      if (!result.bestTime || !result.duration || !result.intensity || !result.reasoning) {
+        throw new Error('Invalid response format from DeepSeek API');
+      }
+
+      return result;
+    } catch (err) {
+      throw new Error(`Failed to parse DeepSeek API response: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  } catch (error) {
+    console.error('DeepSeek API Error:', error);
+    throw new APIError(
+      'Failed to get DeepSeek recommendation',
+      true
+    );
+  }
 }

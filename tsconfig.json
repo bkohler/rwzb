@@ -1,4 +1,18 @@
 {
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "types": ["node", "jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "target": "ES2022",
+    "esModuleInterop": true,
+    "rootDir": ".",
+    "lib": ["es2020", "dom"]
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },

@@ -6,25 +6,47 @@
   "homepage": "https://bkohler.github.io/rwzb",
   "scripts": {
     "dev": "vite",
+    "server": "node scripts/server.js",
+    "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
+    "test-deepseek": "ts-node --esm -r tsconfig-paths/register scripts/test-deepseek.ts",
+    "test-deepseek-direct": "node scripts/test-deepseek-direct.js",
+    "test-api": "node scripts/test-api.js",
+    "test-api-ts": "ts-node --esm -r tsconfig-paths/register scripts/test-api.ts",
+    "test": "jest",
+    "test-deepseek-integration": "ts-node --esm -r tsconfig-paths/register scripts/test-deepseek-integration.ts",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.12",
     "axios": "^1.8.2",
+    "concurrently": "^9.1.2",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "vite-plugin-proxy": "^0.5.0",
     "vue": "^3.5.13"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.11",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.21",
+    "dotenv": "^16.4.7",
     "gh-pages": "^6.3.0",
+    "jest": "^29.7.0",
+    "openai": "^4.89.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.12",
+    "ts-jest": "^29.3.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "~5.7.2",
     "vite": "^6.2.0",
-    "vue-tsc": "^2.2.4"
+    "vue-tsc": "^2.2.8"
   }
 }
