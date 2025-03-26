@@ -27,6 +27,22 @@ Vue.js application that recommends optimal running times based on weather condit
    - Use mock keys in test files
    - Never use production keys in tests
 
+## GitHub Pages Deployment
+
+1. **Set up GitHub Secrets**:
+   - Go to Repository Settings > Secrets > Actions
+   - Add these secrets:
+     - `WEATHER_API_KEY`: Your OpenWeatherMap API key
+     - `DEEPSEEK_API_KEY`: Your DeepSeek API key
+
+2. **Deployment**:
+   - Pushes to `main` branch will automatically deploy to GitHub Pages
+   - The app will be available at: `https://[your-username].github.io/rwzb/`
+
+3. **Troubleshooting**:
+   - Check Actions tab for deployment logs
+   - Ensure base URL in vite.config.ts matches your repo name
+
 ## Incident Report (2025-03-26)
 - Exposed API keys in git history
 - Remediation steps taken:
