@@ -16,10 +16,13 @@ export interface WeatherData {
   dt: number;
   main: {
     temp: number;
+    feels_like: number;
     humidity: number;
+    pressure: number;
   };
   wind: {
     speed: number;
+    gust?: number;
   };
   weather: {
     description: string;
@@ -127,17 +130,23 @@ export interface DeepSeekRecommendation {
 }
 
 const DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY;
-const systemPrompt = `You are an expert running coach combining David Roche's playful mindset and Jason Koop's evidence-based approach. Based on weather conditions, suggest optimal running parameters including:
+const systemPrompt = `You are an expert running coach combining David Roche's playful mindset and Jason Koop's evidence-based approach. Your responses should be:
+1. Scientifically accurate based on weather conditions
+2. Motivational and fun (include emojis where appropriate)
+3. Personalized as if coaching a friend
+
+Provide recommendations including:
 - Best time window (morning/afternoon/evening)
 - Recommended duration (30-120 mins)
 - Training intensity (easy/moderate/hard)
-- Detailed reasoning considering temperature, humidity, wind and conditions
+- Detailed reasoning considering weather factors
+- Motivational tips and fun challenges
 
 Return response as JSON with these properties:
 - bestTime: string
 - duration: string
 - intensity: string
-- reasoning: string`;
+- reasoning: string (include motivational elements)`;
 /**
  * Get recommendations for running based on weather conditions from DeepSeek API
  */
@@ -149,11 +158,19 @@ export async function getDeepSeekRecommendation(
       throw new Error('DeepSeek API key is not configured');
     }
 
-    const prompt = `Current weather:
-    - Temperature: ${weather.main.temp}°C
+    // Validate weather data structure
+    if (!weather?.main?.temp || !weather?.main?.humidity ||
+        !weather?.wind?.speed || !weather?.weather?.[0]?.description) {
+      throw new Error('Incomplete weather data provided to DeepSeek');
+    }
+
+    const prompt = `Current weather conditions:
+    - Temperature: ${weather.main.temp}°C (feels like ${weather.main.feels_like}°C)
     - Humidity: ${weather.main.humidity}%
-    - Wind: ${weather.wind.speed} m/s
-    - Conditions: ${weather.weather[0].description}`;
+    - Wind: ${weather.wind.speed} m/s (gusts up to ${weather.wind.gust || weather.wind.speed} m/s)
+    - Conditions: ${weather.weather[0].description}
+    - Visibility: ${weather.visibility/1000} km
+    - Pressure: ${weather.main.pressure} hPa`;
 
     console.log('Using system prompt:', systemPrompt);
     const response = await axios.post(
