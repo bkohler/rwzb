@@ -1,14 +1,20 @@
-<script setup lang="ts">
+<script lang="ts">
 import { ref } from 'vue'
 
-const error = ref<Error | null>(null)
-const errorInfo = ref<string>('')
-
-function catchError(err: Error, info: string) {
+// Used by ErrorBoundary component
+export function _catchError(err: Error, info: string) {
   error.value = err
   errorInfo.value = info
   console.error('Error caught:', err, info)
 }
+
+export const error = ref<Error | null>(null)
+export const errorInfo = ref<string>('')
+</script>
+
+<script setup lang="ts">
+const error = ref<Error | null>(null)
+const errorInfo = ref<string>('')
 </script>
 
 <template>
